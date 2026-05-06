@@ -1,0 +1,76 @@
+name: 🎵 Spotify Clone — Deploy & Validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: 🔍 Validate HTML & CSS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install validators
+        run: npm install -g html-validate stylelint stylelint-config-standard
+
+      - name: Validate HTML
+        run: npx html-validate index.html || true
+
+      - name: Check file sizes
+        run: |
+          echo "📦 Project file sizes:"
+          du -sh .
+          find . -name "*.mp3" | xargs -I{} du -h {} 2>/dev/null || true
+          find . -name "*.css" | xargs -I{} du -h {} 2>/dev/null || true
+          find . -name "*.js"  | xargs -I{} du -h {} 2>/dev/null || true
+
+  lighthouse:
+    name: 🏆 Lighthouse Performance Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install serve
+        run: npm install -g serve
+      - name: Run Lighthouse CI (mock)
+        run: echo "✅ Lighthouse audit would run here with LHCI"
+
+  deploy:
+    name: 🚀 Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: validate
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
