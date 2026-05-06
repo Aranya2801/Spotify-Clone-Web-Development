@@ -12,7 +12,7 @@
 
 <br/><br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Syne&size=22&pause=1000&color=1DB954&center=true&vCenter=true&width=600&lines=🎵+Advanced+Spotify+Clone+Web+App;🎧+Real-time+Audio+Visualizer;🎼+10+Acoustic+Cover+Tracks;⌨️+Full+Keyboard+Shortcuts;💾+Persistent+Like+%26+History+System" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Syne&size=22&pause=1000&color=1DB954&center=true&vCenter=true&width=600&lines=🎵+Advanced+Spotify+Clone+Web+App;🎧+Real-time+Audio+Visualizer;🎼+10+Acoustic+Cover+Tracks;⌨️+Full+Keyboard+Shortcuts;💾+Persistent+Like+%26+History+System" />
 
 </div>
 
