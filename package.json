@@ -1,0 +1,13 @@
+{
+  "name": "spotify-clone-web",
+  "version": "2.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Spotify-style web player with content-based recommendations",
+  "scripts": {
+    "start": "npx serve -l 3000 .",
+    "test": "node --test tests/*.test.js",
+    "eval": "node tools/evaluate.mjs"
+  },
+  "license": "MIT"
+}
