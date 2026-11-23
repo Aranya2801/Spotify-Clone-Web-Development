@@ -45,8 +45,8 @@ jobs:
         working-directory: _site
         run: |
           git init -q -b gh-pages
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "ARANYA GHOSH"
+          git config user.email "aranyaghoshriku2801@gmail.com"
           git add -A
           git commit -qm "deploy ${GITHUB_SHA::7}"
           git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages
