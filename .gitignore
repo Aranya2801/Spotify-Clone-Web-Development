@@ -28,3 +28,7 @@ desktop.ini
 # Temporary
 tmp/
 temp/
+
+# Python
+__pycache__/
+.venv/

@@ -1,58 +1,71 @@
-/* ============================================
-   SERVICE WORKER — Spotify Clone PWA
-   Aranya2801 | 2025
-   ============================================ */
+// Offline support. Paths are relative to this file so it works both on
+// localhost and under /Spotify-Clone-Web-Development/ on GitHub Pages.
+//
+// Bump VERSION whenever you change any of the cached files.
 
-const CACHE_NAME = 'aranya-music-v2';
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/manifest.json'
+const VERSION = 'v3';
+const SHELL = `shell-${VERSION}`;
+const MEDIA = 'media-v1';
+
+const SHELL_FILES = [
+  './',
+  'index.html',
+  'css/style.css',
+  'js/app.js',
+  'js/tracks.js',
+  'js/similarity.js',
+  'js/queue.js',
+  'js/store.js',
+  'js/visualizer.js',
+  'js/utils.js',
+  'data/features.json',
+  'manifest.json',
+  'assets/icons/logo.svg',
 ];
 
-// Install: cache static assets
-self.addEventListener('install', (e) => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Caching static assets');
-      return cache.addAll(STATIC_ASSETS);
-    })
-  );
-  self.skipWaiting();
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(SHELL).then(c => c.addAll(SHELL_FILES)).then(() => self.skipWaiting()));
 });
 
-// Activate: clean old caches
-self.addEventListener('activate', (e) => {
+self.addEventListener('activate', e => {
   e.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== SHELL && k !== MEDIA).map(k => caches.delete(k))))
+      .then(() => self.clients.claim()),
   );
-  self.clients.claim();
 });
 
-// Fetch: serve from cache with network fallback
-self.addEventListener('fetch', (e) => {
-  const url = new URL(e.request.url);
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return;
 
-  // For MP3 files: network-first (stream audio)
-  if (url.pathname.endsWith('.mp3')) {
-    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+  // audio: don't touch it. <audio> uses Range requests and caching partial
+  // (206) responses properly is more trouble than it's worth here
+  if (url.pathname.endsWith('.mp3')) return;
+
+  // images: cache on first view
+  if (/\.(png|jpe?g|svg|webp)$/.test(url.pathname)) {
+    e.respondWith(
+      caches.open(MEDIA).then(async cache => {
+        const hit = await cache.match(req);
+        if (hit) return hit;
+        const res = await fetch(req);
+        if (res.ok) cache.put(req, res.clone());
+        return res;
+      }),
+    );
     return;
   }
 
-  // For everything else: cache-first
+  // app shell: network first so updates show up, cache as fallback offline
   e.respondWith(
-    caches.match(e.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(e.request).then((response) => {
-        if (!response || response.status !== 200) return response;
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
-        return response;
-      });
-    })
+    fetch(req)
+      .then(res => {
+        if (res.ok) caches.open(SHELL).then(c => c.put(req, res.clone()));
+        return res;
+      })
+      .catch(() => caches.match(req).then(r => r || caches.match('index.html'))),
   );
 });

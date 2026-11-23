@@ -1,27 +1,14 @@
 {
-  "name": "Aranya's Music Player",
-  "short_name": "AMusic",
-  "description": "Advanced Spotify Clone — Acoustic Covers by Ishaan Kaushik",
-  "start_url": "/index.html",
+  "name": "Aranya's Music",
+  "short_name": "Music",
+  "description": "Web music player with audio-feature recommendations. Acoustic covers by Ishaan Kaushik.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#1DB954",
-  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#121212",
   "categories": ["music", "entertainment"],
   "icons": [
-    {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%231DB954'/><path d='M28 38c12-4 32-4 44 6M28 50c10-3 26-3 38 5M28 62c8-2 20-2 30 4' stroke='white' stroke-width='5' stroke-linecap='round' fill='none'/></svg>",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ],
-  "screenshots": [],
-  "shortcuts": [
-    {
-      "name": "Play / Pause",
-      "description": "Toggle playback",
-      "url": "/index.html"
-    }
+    { "src": "assets/icons/logo.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ]
 }
